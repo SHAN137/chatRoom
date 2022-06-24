@@ -11,7 +11,10 @@ export default function ChatRoomItem({ chatRoom }) {
 
     const onPress = () => {
       // 尽量在这少传数据
-      navigation.navigate('ChatRoom', { id: chatRoom.id })
+      navigation.navigate('ChatRoom', { 
+        id: chatRoom.id,
+        name: user.name
+      })
     }
     
     

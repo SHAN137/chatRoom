@@ -18,7 +18,7 @@ export default function MessageInput({ }) {
   }
 
   const onPress = () => {
-    console.warn('press')
+    console.log('press')
     if (message) {
       sendMessage()
     } else {

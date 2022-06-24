@@ -11,8 +11,10 @@ export default function ChatRoomScreen() {
     const route = useRoute();
     const navigation = useNavigation();
 
-    console.log("sa", route.params ? route.params.id : 'no')
-    navigation.setOptions({title: 'shsna'})
+    // console.log("sa", route.params ? route.params.id : 'no')r
+    // 这里设置会报 warning
+    // Cannot update a component (`NativeStackNavigator`) while rendering a different component (`ChatRoomScreen`), To locate the bad setState() call inside `ChatRoomScreen`
+    // navigation.setOptions({title: 'shsna'})
 
     return (
         <SafeAreaView style={styles.page}>

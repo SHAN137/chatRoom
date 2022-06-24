@@ -20,7 +20,7 @@ https://github.com/intel/haxm/releases/tag/v7.7.0
 2. 在 Android Studio 打开模拟设备
 3. 启动 expo init 过的 React Native 项目，即输入 npm start
 
-##### 项目
+##### 前端页面(video 1)
 1. 聊天室主页面
 - ChatRoomItem
 - 聊天室列表
@@ -84,3 +84,29 @@ keyboardDidHide = () => {
 3. react navigation
 4. 主页头部
     - 对于 React 函数组件，我们更推荐使用useWindowDimensions这个 Hook API。和 Dimensions 不同，它会在屏幕尺寸变化时自动更新
+
+##### (video 2)
+1. Amlify Studio
+- 注册、登录 https://aws.amazon.com/cn/console/
+- 跳转 Amlify Studio https://us-west-1.admin.amplifyapp.com/admin/dcd7klisda86a/staging/components
+- 设置身份验证
+- 创建表，且字段中的关系
+2. 从 Amlify Studio 下载设置好的后端到本地
+- 下载 Amlify Studio 中的后端项目
+    - npm i -g @aws-amplify/cli
+    - sign in
+    - amplify pull --appId dcd7klisda86a --envName staging
+    - Cognito 用户池（先提了这个功能而已）
+- 本地配置 Amlify
+    - Install Amplify libraries 说明网址 - https://docs.amplify.aws/start/getting-started/setup/q/integration/react-native/
+        - npm install aws-amplify aws-amplify-react-native @react-native-community/netinfo @react-native-async-storage/async-storage @react-native-picker/picker
+        - app.tsx
+- 配置用户验证模块
+    - app.tsx 
+        - withAuthenticator 用高阶函数包裹，默认的用户验证页面
+        - 默认保存用户 token
+3. Data Layer
+4. Datastore
+- Query library
+- On-device caching(断网时保存数据在本地)
+- Data sync

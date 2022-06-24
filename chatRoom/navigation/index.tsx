@@ -43,10 +43,13 @@ function RootNavigator() {
       <Stack.Screen 
         name="ChatRoom" 
         component={ChatRoomScreen} 
-        options={{ 
-          headerTitle: props => <ChatRoomHeader {...props}/>,
+        options={({route}) => {
+          console.log('ChatRoom route-->', route)
+          return({ 
+          headerTitle: (props) => <ChatRoomHeader {...route.params}/>,
           headerBackTitleVisible: false,
-        }}
+        })}
+      }
       />
       <Stack.Screen name="NotFound" component={NotFoundScreen} />
     </Stack.Navigator>
@@ -74,7 +77,7 @@ const HomeHeader = (props) => {
         source={{uri: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/jeff.jpeg'}}
         style={{width: 30, height: 30, borderRadius: 15}}
       />
-      <Text style={{flex: 1, textAlign: 'center', marginLeft: 30, fontWeight: 'bond'}}>HOME</Text>
+      <Text style={{flex: 1, textAlign: 'center', marginLeft: 30, fontWeight: 'bold'}}>HOME</Text>
       <Feather style={{marginHorizontal: 10}} name='camera' size={24} color="black" />
       <Feather style={{marginHorizontal: 10}} name='edit-2' size={24} color="black" />
     </View>
@@ -83,7 +86,7 @@ const HomeHeader = (props) => {
 
 const ChatRoomHeader = (props) => {
   const { width } = useWindowDimensions()
-  console.log('porps',props)
+  console.log('ChatRoomHeader-porps',props)
   return (
     <View style={{ 
       flexDirection: 'row', 
@@ -99,7 +102,7 @@ const ChatRoomHeader = (props) => {
         source={{uri: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/jeff.jpeg'}}
         style={{width: 30, height: 30, borderRadius: 15}}
       />
-      <Text style={{flex: 1, marginLeft: 10, fontWeight: 'bond'}}>{props.children}</Text>
+      <Text style={{flex: 1, marginLeft: 10, fontWeight: 'bold'}}>{props.name}</Text>
       <Feather style={{marginHorizontal: 10}} name='camera' size={24} color="black" />
       <Feather style={{marginHorizontal: 10}} name='edit-2' size={24} color="black" />
     </View>
