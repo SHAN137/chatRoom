@@ -21,7 +21,15 @@ function App() {
 
   // 用户验证的产生的信息
   // Auth.currentAuthenticatedUser().then(console.log)
-  // DataStore.start()
+  DataStore.start()
+
+  // DataStore.configure({
+  //   syncExpressions: [
+  //     syncExpression(User, () => {
+  //       return User => User
+  //     })
+  //   ]
+  // });
 
   if (!isLoadingComplete) {
     return null;

@@ -137,9 +137,9 @@ keyboardDidHide = () => {
     - 查询用户列表
     - bug 网页版可正常显示数据，手机安卓版不能连接云端数据库，只自动获取手机本地数据库
         - 原因：手机模拟器没联网
+- Fetch & CreateChatRooms
     - tip 
         - !!chatRoom.newMessage 有时为 0 会报错，可取两次反，转为 boolen
-- Fetch & CreateChatRooms
 - Send & Receive messages(in real time)
 
 

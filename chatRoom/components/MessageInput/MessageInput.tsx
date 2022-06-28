@@ -5,11 +5,22 @@ import { View, Image, Text, TextInput, StyleSheet, Pressable, KeyboardAvoidingVi
 import Colors from '../../constants/Colors'
 import { SimpleLineIcons, Feather, MaterialCommunityIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 
-export default function MessageInput({ }) {
+import { DataStore, Auth } from 'aws-amplify';
+import { Message as MessageModel } from '../../chatRoomBackend/src/models';
+
+export default function MessageInput() {
+  // 
   // inputMessage
   const [message, setMessage] = useState('')
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
+    const authData = await Auth.currentAuthenticatedUser()
+    await DataStore.save(new MessageModel({
+      content: message,
+      userID: authData.attributes.sub,
+      chatroomID: chatRoomId,
+    }))
+
     setMessage('')
   }
 

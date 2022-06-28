@@ -13,20 +13,20 @@ export default function UsersScreen() {
 
   const [users, setUsers] = useState<User[]>([]);
 
-  // useEffect(() => {
-  //   // 独立本地数据存储
-  //   const fetchUsers = async () => {
-  //     // await DataStore.delete(User, "10908")
-  //     const fetchedUsers = await DataStore.query(User);
-  //     console.log('fetchedUsers', fetchedUsers)
-  //     setUsers(fetchedUsers);
-  //   };
-  //   fetchUsers();
-  // }, []);
-
   useEffect(() => {
-    DataStore.query(User).then(setUsers)
-  }, [])
+    // 独立本地数据存储
+    const fetchUsers = async () => {
+      // await DataStore.delete(User, "10908")
+      const fetchedUsers = await DataStore.query(User);
+      console.log('fetchedUsers', fetchedUsers)
+      setUsers(fetchedUsers);
+    };
+    fetchUsers();
+  }, []);
+
+  // useEffect(() => {
+  //   DataStore.query(User).then(setUsers)
+  // }, [])
  
   return (
     <View style={styles.page}>

@@ -1,11 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {Text, View, StyleSheet} from 'react-native';
+
+import { DataStore, Auth } from 'aws-amplify';
+import { User } from '../../chatRoomBackend/src/models';
 
 const myId = 'u1'
 
 export default function Message({ message }) {
+    const [user, setUser] = useState<User|undefined>()
+    const [isMe, setIsMe] = useState<boolean>(false)
 
-    const isMe = message.user.id === myId;
+    useEffect(() => {
+        DataStore.query(User, message.userID).then(setUser)
+    }, [])
+
+    useEffect(() => {
+        const checkIsMe = async () => {
+            if(!user) {
+                return
+            }
+            const authData = await Auth.currentAuthenticatedUser()
+            setIsMe(user.id === authData.attributes.sub)
+        }
+        checkIsMe()
+    }, [user])
 
     // console.log('message', message)
     return(
