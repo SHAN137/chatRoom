@@ -7,7 +7,7 @@ type Message @model @auth(rules: [{allow: public}]) {
 
 type ChatRoom @model @auth(rules: [{allow: public}]) {
   id: ID!
-  newMessage: String
+  newMessage: Int
   lastMessage: Message @hasOne
   Messages: [Message] @hasMany(indexName: "byChatRoom", fields: ["id"])
   chatRoomUsers: [User] @manyToMany(relationName: "ChatRoomUser")
@@ -21,3 +21,4 @@ type User @model @auth(rules: [{allow: public}]) {
   Messages: [Message] @hasMany(indexName: "byUser", fields: ["id"])
   chatrooms: [ChatRoom] @manyToMany(relationName: "ChatRoomUser")
 }
+ 

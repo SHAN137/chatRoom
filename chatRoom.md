@@ -105,8 +105,45 @@ keyboardDidHide = () => {
     - app.tsx 
         - withAuthenticator 用高阶函数包裹，默认的用户验证页面
         - 默认保存用户 token
-3. Data Layer
-4. Datastore
+3. 保存已验证的用户信息到数据库
+- 在 aws.DynamoDB 增加用户信息（使用 lambda trigger）
+    - amplify auth update 
+        - Which triggers do you want to enable for Cognito
+        - Post Confirmation
+        - Create your own module
+    - 默认在验证邮箱后触发的函数（执行 custom.js）
+    - object?.attr  
+        object 恒等于 null 或者 undefined 时，取值为 undefined，否则为 object.attr
+- 安全性
+    - 常规应用中会有前端之前请求后端增加用户信息的接口
+        - 暴露了创建数据库用户的操作，其他人也可以直接通过操作数据库增加
+    - 此应用是在 trigger 后
+        - 无法直接在数据库创建用户，比如来自 api （不可）
+        - 授予 lambda 访问权限，能够将数据写入 dynamodb 
+            - 在 Identity and Access Management (IAM) 添加权限策略 LambdaPolicy.json
+            - 创建策略并将策略附加在角色上
+            - 在 custom.js 上写下插入的信息
+                - 打印信息在 CloudWatch 可查
+- 启动出现 bug，本地和云端的两个运行环境冲突
+    - 报错：jest-haste-map: Haste module naming collision: chatRoomPostConfirmation.The following files share their name; please adjust your hasteImpl:
+        mockPath1: 'chatRoomBackend\\amplify\\#current-cloud-backend\\function\\chatRoomPostConfirmation\\src\\package.json',
+        mockPath2: 'chatRoomBackend\\amplify\\backend\\function\\chatRoomPostConfirmation\\src\\package.json'
+        - 解决方案 https://qa.1r1g.com/sf/ask/4259659351/
+        - exclude the #current-backend-info folder from being tested by jest-haste-map  
+            - ts 根目录下创建 metro.config.js 文件
+            - 用 rn 的或者 rn-cli.config.js 文件
+4. Integrate Datastore 
+- Fetch Usres
+    - 查询用户列表
+    - bug 网页版可正常显示数据，手机安卓版不能连接云端数据库，只自动获取手机本地数据库
+        - 原因：手机模拟器没联网
+    - tip 
+        - !!chatRoom.newMessage 有时为 0 会报错，可取两次反，转为 boolen
+- Fetch & CreateChatRooms
+- Send & Receive messages(in real time)
+
+
+
 - Query library
 - On-device caching(断网时保存数据在本地)
 - Data sync

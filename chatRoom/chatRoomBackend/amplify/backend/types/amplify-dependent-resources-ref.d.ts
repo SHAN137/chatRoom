@@ -24,5 +24,11 @@ export type AmplifyDependentResourcesAttributes = {
             "LambdaExecutionRole": "string",
             "Region": "string"
         }
+    },
+    "storage": {
+        "s3chatroomstorageebf07b7e": {
+            "BucketName": "string",
+            "Region": "string"
+        }
     }
 }

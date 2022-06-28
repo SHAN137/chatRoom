@@ -10,8 +10,8 @@ import { Amplify, Auth } from 'aws-amplify';
 import awsconfig from './chatRoomBackend/src/aws-exports';
 import { withAuthenticator } from 'aws-amplify-react-native';
 
-import { DataStore, Hub } from 'aws-amplify';
-import { User } from './chatRoomBackend/src/models/index';
+import { DataStore, Hub, syncExpression } from 'aws-amplify';
+import { ChatRoom, User, ChatRoomUser } from './chatRoomBackend/src/models/index';
 
 Amplify.configure(awsconfig)
 
