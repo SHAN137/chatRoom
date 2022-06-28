@@ -8,7 +8,7 @@ import ChatRoomDate from '../assets/SignalAssets/dummy-data/ChatRooms';
 
 import { Auth } from 'aws-amplify'; 
 
-export default function TabOneScreen() {
+export default function HomeScreen() {
 
   const logout = () => {
     console.log('logout')
@@ -23,9 +23,10 @@ export default function TabOneScreen() {
         renderItem={({item}) => <ChatRoomItem chatRoom={item}/>}
         showsVerticalScrollIndicator={false}
       />
-      <Pressable onPress={logout} style={{backgroundColor: 'lightblue', height: 50, margin: 10, justifyContent: 'center', alignItems: 'center'}}>
+      {/* logout */}
+      {/* <Pressable onPress={logout} style={{backgroundColor: 'lightblue', height: 50, margin: 10, justifyContent: 'center', alignItems: 'center'}}>
         <Text>Logout</Text>
-      </Pressable>
+      </Pressable> */}
     </View>
   );
 }

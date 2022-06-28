@@ -3,7 +3,7 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { ColorSchemeName, Pressable } from 'react-native';
@@ -14,7 +14,8 @@ import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../typ
 import LinkingConfiguration from './LinkingConfiguration';
 
 import ChatRoomScreen from '../screens/ChatRoomScreen';
-import HomeScreen from '../screens/HomeScreen'
+import HomeScreen from '../screens/HomeScreen';
+import UsersScreen from '../screens/UsersScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -44,12 +45,21 @@ function RootNavigator() {
         name="ChatRoom" 
         component={ChatRoomScreen} 
         options={({route}) => {
-          console.log('ChatRoom route-->', route)
-          return({ 
-          headerTitle: (props) => <ChatRoomHeader {...route.params}/>,
-          headerBackTitleVisible: false,
-        })}
-      }
+            // console.log('ChatRoom route-->', route)
+            return({ 
+              headerTitle: (props) => <ChatRoomHeader {...route.params}/>,
+              headerBackTitleVisible: false,
+            })
+          }
+        }
+      />
+      <Stack.Screen 
+        name="Users" 
+        component={UsersScreen} 
+        options={{ 
+          title: 'Users',
+          // headerBackTitleVisible: false,  
+        }}
       />
       <Stack.Screen name="NotFound" component={NotFoundScreen} />
     </Stack.Navigator>
@@ -63,6 +73,9 @@ import { Feather } from '@expo/vector-icons';
 
 const HomeHeader = (props) => {
   const { width } = useWindowDimensions()
+  const navigation = useNavigation()
+
+  // console.log('HomeHeader.props, ', props, 'navigation', navigation);
 
   return (
     <View style={{ 
@@ -79,7 +92,9 @@ const HomeHeader = (props) => {
       />
       <Text style={{flex: 1, textAlign: 'center', marginLeft: 30, fontWeight: 'bold'}}>HOME</Text>
       <Feather style={{marginHorizontal: 10}} name='camera' size={24} color="black" />
-      <Feather style={{marginHorizontal: 10}} name='edit-2' size={24} color="black" />
+      <Pressable onPress={()=> navigation.navigate('Users')}>
+        <Feather style={{marginHorizontal: 10}} name='edit-2' size={24} color="black" />
+      </Pressable>
     </View>
   )
 }
