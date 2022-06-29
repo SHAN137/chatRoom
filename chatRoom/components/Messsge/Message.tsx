@@ -27,7 +27,7 @@ export default function Message({ message }) {
 
     // console.log('message', message)
     return(
-        <View style={[styles.containter, isMe ? styles.leftContainer : styles.rightContainer]}>
+        <View style={[styles.containter, isMe ? styles.rightContainer : styles.leftContainer]}>
             <Text style={{ color: isMe ? 'white' : 'black'}}>{ message.content }</Text>
         </View>
     )
@@ -41,12 +41,12 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     leftContainer: {
-        backgroundColor: '#3872E9',
+        backgroundColor: 'lightgrey',
         marginLeft: 10,
         marginRight: 'auto'
     },
     rightContainer: {
-        backgroundColor: 'lightgrey',
+        backgroundColor: '#3872E9',
         marginLeft: 'auto',
         marginRight: 10
     },

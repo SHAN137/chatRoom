@@ -136,11 +136,21 @@ keyboardDidHide = () => {
 - Fetch Usres
     - 查询用户列表
     - bug 网页版可正常显示数据，手机安卓版不能连接云端数据库，只自动获取手机本地数据库
-        - 原因：手机模拟器没联网
+        - 原因（分析不出来）：
+            1. 手机没联网 
+            2. aws 权限 
+            - 报警告： [Unhandled promise rejection: Error: No credentials, applicationId or region]
+                - 屏蔽 aws config 的 Analytics
+        - 没解决
+            - amplify pull --appId dcd7klisda86a --envName staging
+            - amplify push
+            - amplify update api？？？？
 - Fetch & CreateChatRooms
     - tip 
         - !!chatRoom.newMessage 有时为 0 会报错，可取两次反，转为 boolen
 - Send & Receive messages(in real time)
+    - 订阅，与数据库云同步
+        - DataStore.observe
 
 
 

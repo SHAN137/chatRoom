@@ -4,20 +4,16 @@ import { View, Image, Pressable, Text, StyleSheet, FlatList } from 'react-native
 
 import ChatRoomItem from '../components/ChatRoomItem';
 
-import ChatRoomDate from '../assets/SignalAssets/dummy-data/ChatRooms';
-
 import { Auth, DataStore } from 'aws-amplify'; 
 import { ChatRoom, ChatRoomUser } from '../chatRoomBackend/src/models';
 
-import ChatRoomScreen from './TabTwoScreen';
-
 export default function HomeScreen() {
 
-  // const logout = () => {
-  //   console.log('logout')
-  //   // Can't perform a React state update on an unmounted component.
-  //   Auth.signOut()
-  // }
+  const logout = () => {
+    // console.log('logout')
+    // Can't perform a React state update on an unmounted component.
+    Auth.signOut()
+  }
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
 
   useEffect(()=>{

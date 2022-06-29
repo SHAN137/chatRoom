@@ -14,6 +14,7 @@ export default function UsersScreen() {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
+
     // 独立本地数据存储
     const fetchUsers = async () => {
       // await DataStore.delete(User, "10908")
@@ -27,6 +28,7 @@ export default function UsersScreen() {
   // useEffect(() => {
   //   DataStore.query(User).then(setUsers)
   // }, [])
+
  
   return (
     <View style={styles.page}>

@@ -7,21 +7,31 @@ import { SimpleLineIcons, Feather, MaterialCommunityIcons, AntDesign, Ionicons }
 
 import { DataStore, Auth } from 'aws-amplify';
 import { Message as MessageModel } from '../../chatRoomBackend/src/models';
+import { ChatRoom } from '../../chatRoomBackend/src/models';
 
-export default function MessageInput() {
+export default function MessageInput({ chatRoom }) {
   // 
   // inputMessage
   const [message, setMessage] = useState('')
 
+  // console.log('MESSAGEINPUT--chatRoom', chatRoom)
   const sendMessage = async () => {
     const authData = await Auth.currentAuthenticatedUser()
-    await DataStore.save(new MessageModel({
+    const newMessage = await DataStore.save(new MessageModel({
       content: message,
       userID: authData.attributes.sub,
-      chatroomID: chatRoomId,
+      chatroomID: chatRoom.id,
     }))
 
+    updateLastMessage(newMessage)
+
     setMessage('')
+  }
+
+  const updateLastMessage = async (newMessage) => {
+    DataStore.save(ChatRoom.copyOf(chatRoom, updated => {
+      updated.lastMessage = newMessage;
+    }))
   }
 
   const onPlusClick = () => {
@@ -29,7 +39,7 @@ export default function MessageInput() {
   }
 
   const onPress = () => {
-    console.log('press')
+    // console.log('press')
     if (message) {
       sendMessage()
     } else {
