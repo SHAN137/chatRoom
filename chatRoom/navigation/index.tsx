@@ -3,10 +3,10 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { NavigationContainer, DefaultTheme, DarkTheme, useNavigation } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import { ColorSchemeName } from 'react-native';
 
 import NotFoundScreen from '../screens/NotFoundScreen';
 
@@ -16,6 +16,9 @@ import LinkingConfiguration from './LinkingConfiguration';
 import ChatRoomScreen from '../screens/ChatRoomScreen';
 import HomeScreen from '../screens/HomeScreen';
 import UsersScreen from '../screens/UsersScreen';
+
+import ChatRoomHeader from './ChatRoomHeader';
+import HomeHeader from './HomeHeader';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -44,10 +47,10 @@ function RootNavigator() {
       <Stack.Screen 
         name="ChatRoom" 
         component={ChatRoomScreen} 
-        options={({route}) => {
+        options={({route, navigation}) => {
             // console.log('ChatRoom route-->', route)
             return({ 
-              headerTitle: (props) => <ChatRoomHeader {...route.params}/>,
+              headerTitle: (props) => <ChatRoomHeader id={route.params?.id} />,
               headerBackTitleVisible: false,
             })
           }
@@ -64,62 +67,4 @@ function RootNavigator() {
       <Stack.Screen name="NotFound" component={NotFoundScreen} />
     </Stack.Navigator>
   );
-}
-
-import { View, Image, Text, useWindowDimensions } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-
-
-
-const HomeHeader = (props) => {
-  const { width } = useWindowDimensions()
-  const navigation = useNavigation()
-
-  // console.log('HomeHeader.props, ', props, 'navigation', navigation);
-
-  return (
-    <View style={{ 
-      flexDirection: 'row', 
-      justifyContent: 'space-between', 
-      alignItems: 'center',
-      backgroundColor:'lightblue', 
-      width: width - 16,
-      padding: 8,
-    }}>
-      <Image 
-        source={{uri: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/jeff.jpeg'}}
-        style={{width: 30, height: 30, borderRadius: 15}}
-      />
-      <Text style={{flex: 1, textAlign: 'center', marginLeft: 30, fontWeight: 'bold'}}>HOME</Text>
-      <Feather style={{marginHorizontal: 10}} name='camera' size={24} color="black" />
-      <Pressable onPress={()=> navigation.navigate('Users')}>
-        <Feather style={{marginHorizontal: 10}} name='edit-2' size={24} color="black" />
-      </Pressable>
-    </View>
-  )
-}
-
-const ChatRoomHeader = (props) => {
-  const { width } = useWindowDimensions()
-  console.log('ChatRoomHeader-porps',props)
-  return (
-    <View style={{ 
-      flexDirection: 'row', 
-      justifyContent: 'space-between', 
-      alignItems: 'center',
-      backgroundColor:'lightblue', 
-      width: width - 48,
-      marginLeft: -25,
-      padding: 8,
-      
-    }}>
-      <Image 
-        source={{uri: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/jeff.jpeg'}}
-        style={{width: 30, height: 30, borderRadius: 15}}
-      />
-      <Text style={{flex: 1, marginLeft: 10, fontWeight: 'bold'}}>{props.name}</Text>
-      <Feather style={{marginHorizontal: 10}} name='camera' size={24} color="black" />
-      <Feather style={{marginHorizontal: 10}} name='edit-2' size={24} color="black" />
-    </View>
-  )
 }

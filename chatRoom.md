@@ -105,7 +105,7 @@ keyboardDidHide = () => {
     - app.tsx 
         - withAuthenticator 用高阶函数包裹，默认的用户验证页面
         - 默认保存用户 token
-3. 保存已验证的用户信息到数据库
+3. 将已验证的用户信息从 cognito 到数据库 with trigger
 - 在 aws.DynamoDB 增加用户信息（使用 lambda trigger）
     - amplify auth update 
         - Which triggers do you want to enable for Cognito
@@ -128,10 +128,13 @@ keyboardDidHide = () => {
     - 报错：jest-haste-map: Haste module naming collision: chatRoomPostConfirmation.The following files share their name; please adjust your hasteImpl:
         mockPath1: 'chatRoomBackend\\amplify\\#current-cloud-backend\\function\\chatRoomPostConfirmation\\src\\package.json',
         mockPath2: 'chatRoomBackend\\amplify\\backend\\function\\chatRoomPostConfirmation\\src\\package.json'
-        - 解决方案 https://qa.1r1g.com/sf/ask/4259659351/
-        - exclude the #current-backend-info folder from being tested by jest-haste-map  
-            - ts 根目录下创建 metro.config.js 文件
-            - 用 rn 的或者 rn-cli.config.js 文件
+        - 解决方案 1  https://qa.1r1g.com/sf/ask/4259659351/
+            - exclude the #current-backend-info folder from being tested by jest-haste-map  
+                - ts 根目录下创建 metro.config.js 文件
+                - 用 rn 的或者 rn-cli.config.js 文件
+        - 解决方案 2
+            - npm install @expo/metro-config --save-dev
+            - 设置黑名单（没找到 blacklist 文件）
 4. Integrate Datastore 
 - Fetch Usres
     - 查询用户列表
@@ -151,7 +154,9 @@ keyboardDidHide = () => {
 - Send & Receive messages(in real time)
     - 订阅，与数据库云同步
         - DataStore.observe
-
+- 复习
+    - map 遍历数组每一个元素并调用回调，并返回一个包含所有结果的数组。就是在原有数据的基础上执行函数,并将执行函数后return的数据返回,形成一个新的数组
+    - forEach循环,他和map不同之处呢,是不需要声明一个新的数组来接收返回值,forEach直接作用于数组本身,在原数组上进行函数操作
 
 
 - Query library
