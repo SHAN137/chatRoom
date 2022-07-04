@@ -43,7 +43,7 @@ const ChatRoomHeader = ({ id }) => {
         
       }}>
         <Image 
-          source={{uri: user?.imageUrl}}
+          source={{uri: user?.imageUri}}
           style={{width: 30, height: 30, borderRadius: 15}}
         />
         <Text style={{flex: 1, marginLeft: 10, fontWeight: 'bold'}}>{user?.name}</Text>

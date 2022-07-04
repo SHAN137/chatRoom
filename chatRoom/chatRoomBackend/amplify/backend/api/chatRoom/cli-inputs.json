@@ -3,7 +3,7 @@
   "serviceConfiguration": {
     "apiName": "chatRoom",
     "serviceName": "AppSync",
-    "gqlSchemaPath": "/tmp/amplify-a5bd7e4c-d031-4012-9c4e-bb1e47e20825/amplify/backend/api/chatRoom/schema.graphql",
+    "gqlSchemaPath": "/tmp/amplify-cf8d70f5-129e-43f5-a987-4ea6b4dfc5a0/amplify/backend/api/chatRoom/schema.graphql",
     "defaultAuthType": {
       "mode": "API_KEY",
       "keyDescription": "api key description",

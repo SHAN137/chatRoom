@@ -22,9 +22,11 @@ type ChatRoomUserMetaData = {
 
 export declare class Message {
   readonly id: string;
-  readonly content: string;
+  readonly content?: string | null;
   readonly userID: string;
   readonly chatroomID: string;
+  readonly imageKey?: string | null;
+  readonly audioKey?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Message, MessageMetaData>);
@@ -47,7 +49,7 @@ export declare class ChatRoom {
 export declare class User {
   readonly id: string;
   readonly name: string;
-  readonly imageUrl?: string | null;
+  readonly imageUri?: string | null;
   readonly status?: string | null;
   readonly Messages?: (Message | null)[] | null;
   readonly chatrooms?: (ChatRoomUser | null)[] | null;

@@ -29,12 +29,16 @@ function App() {
 
   // const listener = Hub.listen('datastore', async hubData => {
   //   const  { event, data } = hubData.payload;
-  //   console.log('event, data', event, data)
+  //   console.log('event, data', event, JSON.stringify(data))
   //   if (event === 'networkStatus') {
   //     console.log(`User has a network connection: ${data.active}`)
   //   }
   // })
-
+  // const dataStart = async() => {
+  //   await DataStore.start();
+  // }
+  // dataStart()
+ 
   // DataStore.configure({
   //   syncExpressions: [
   //     syncExpression(User, () => {
@@ -43,6 +47,7 @@ function App() {
   //     })
   //   ]
   // });
+  // DataStore.start()
   // listener();
 
   if (!isLoadingComplete) {

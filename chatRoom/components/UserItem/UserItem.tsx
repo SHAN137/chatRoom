@@ -98,7 +98,7 @@ export default function UserItem({ user }) {
     
   return (
     <Pressable onPress={onPress} style={styles.container}>
-      <Image source={{ uri: user.imageUrl }} style={styles.image}></Image>
+      <Image source={{ uri: user.imageUri }} style={styles.image}></Image>
       <View style={styles.rightContainer}>
         <View style={styles.row}>
           <Text style={styles.name}>{user.name}</Text>

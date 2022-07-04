@@ -2,12 +2,10 @@
   "resourceName": "s3chatroomstorageebf07b7e",
   "bucketName": "chatroom-storage-ebf07b7e",
   "policyUUID": "9fa1a681",
-  "storageAccess": "authAndGuest",
-  "guestAccess": [
-    "READ"
-  ],
+  "storageAccess": "auth",
+  "guestAccess": [],
   "authAccess": [
-    "READ",
-    "CREATE_AND_UPDATE"
+    "CREATE_AND_UPDATE",
+    "READ"
   ]
 }

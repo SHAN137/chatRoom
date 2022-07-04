@@ -158,6 +158,29 @@ keyboardDidHide = () => {
     - map 遍历数组每一个元素并调用回调，并返回一个包含所有结果的数组。就是在原有数据的基础上执行函数,并将执行函数后return的数据返回,形成一个新的数组
     - forEach循环,他和map不同之处呢,是不需要声明一个新的数组来接收返回值,forEach直接作用于数组本身,在原数组上进行函数操作
 
+##### (video 3)
+- send emoji
+    - import EmojiSelector from 'react-native-emoji-selector'
+- send images
+    - 询问/打开手机相机访问权限
+    - 获取本地相册图片的uri，相机拍摄照片uri
+    - 删除/中断传输图片
+    - 发送图片
+        - 本地 uri —> blob(actual image) -> storage(Amazon S3)
+    - 下载图片显示 s3Image组件
+    - 通知图片上传进度
+- send audio
+    - 询问/打开手机音频访问权限
+    - 开始/暂停录音，获取本地音频uri
+    - 开始/暂停播放音频
+    - 发送音频
+        - 本地 uri —> blob(actual image) -> storage(Amazon S3
+    - 下载图片显示 s3Image组件
+    - 通知图片上传进度
+- Android Studio 单独启动安卓模拟器
+    - 打开 cd D:\AndroidSDK\emulator
+    - 查看 .\emulator.exe -list-avds
+    - 运行 .\emulator.exe -avd Pixel_2_API_30
 
 - Query library
 - On-device caching(断网时保存数据在本地)

@@ -19,7 +19,6 @@ export default function UsersScreen() {
     const fetchUsers = async () => {
       // await DataStore.delete(User, "10908")
       const fetchedUsers = await DataStore.query(User);
-      console.log('fetchedUsers', fetchedUsers)
       setUsers(fetchedUsers);
     };
     fetchUsers();
