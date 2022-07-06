@@ -38,14 +38,11 @@ export default function UserItem({ user }) {
         let comChatRoomUserNum = (await DataStore.query(ChatRoomUser))
           .filter( item => item.chatRoom.id === element.id)
           .length
-          // console.log('comChatRoomUserNum',comChatRoomUserNum)
-          // console.log('element',element)
         if (comChatRoomUserNum == 2) {
           return element
         }
       });
 
-      // console.log('bothChatRoom',bothChatRoom)
       return bothChatRoom[0]
     }
 
@@ -80,7 +77,6 @@ export default function UserItem({ user }) {
 
       // 是否存在共同聊天室
       const comChatRoom = await fetchComChatRoom(dbUser)
-      // console.log('comChatRoom',comChatRoom)
       if (comChatRoom) {
         // 是否存在两人聊天室
         const bothChatRoom = await fetchBothChatRoom(comChatRoom)

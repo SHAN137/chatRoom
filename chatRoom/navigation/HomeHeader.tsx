@@ -8,7 +8,6 @@ const HomeHeader = (props) => {
     const { width } = useWindowDimensions()
     const navigation = useNavigation()
   
-    // console.log('HomeHeader.props, ', props, 'navigation', navigation);
   
     return (
       <View style={{ 

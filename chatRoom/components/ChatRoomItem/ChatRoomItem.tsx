@@ -41,7 +41,6 @@ export default function ChatRoomItem({ chatRoom }) {
     // const user = fetchedUsers.filter(users => users.id !== authData.attributes.sub)[0]
     // find 通过测试函数的第一个元素的值，若无 undefined
     const user = fetchedUsers.find(users => users.id !== authData.attributes.sub) || null;
-    console.log('user', user)
     setUser(user)
   }
 

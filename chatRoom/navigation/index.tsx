@@ -48,7 +48,6 @@ function RootNavigator() {
         name="ChatRoom" 
         component={ChatRoomScreen} 
         options={({route, navigation}) => {
-            // console.log('ChatRoom route-->', route)
             return({ 
               headerTitle: (props) => <ChatRoomHeader id={route.params?.id} />,
               headerBackTitleVisible: false,

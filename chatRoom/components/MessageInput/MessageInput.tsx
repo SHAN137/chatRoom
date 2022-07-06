@@ -19,8 +19,12 @@ import { Audio } from 'expo-av';
 import { Recording } from 'expo-av/build/Audio';
 import AudioPlayer from '../AudioPlayer';
 
-export default function MessageInput({ chatRoom }) {
-  // 
+import MessageReply from '../MesssgeReply';
+import { handler } from '../../chatRoomBackend/amplify/backend/function/chatRoomPostConfirmation/src/custom';
+
+export default function MessageInput(props) {
+  const {chatRoom, messageReplyTo, removeMessageReplyTo} = props
+
   // inputMessage
   const [message, setMessage] = useState('');
   const [isEmojiSelectorOpen, setIsEmojiSelectorOpen] = useState(false);
@@ -38,6 +42,7 @@ export default function MessageInput({ chatRoom }) {
     setImgUploadprogress(0)
     setRecording(null)
     setSoundUri(null)
+    removeMessageReplyTo()
   }
 
   useEffect(() => {
@@ -56,6 +61,14 @@ export default function MessageInput({ chatRoom }) {
     })();
   }, []);
 
+  // 每次只能传一种类型的消息
+  useEffect(() => {
+    if(image || soundUri) {
+      setMessage('')
+    }
+  }, [image,soundUri])
+
+  console.log('message',message)
   // 文本、图片、音频
   const onPressSendIcon = () => {
     if (image) {
@@ -63,24 +76,26 @@ export default function MessageInput({ chatRoom }) {
     } else if (soundUri) {
       sendAudio()
     }else if (message) {
-      sendMessage()
+      sendMessage({content: message})
     } else {
       onPlusClick()
     }
   }
 
-  const sendMessage = async ({ imageKey=null, audioKey=null }) => {
+  const sendMessage = async ({ imageKey=null, audioKey=null, content='' }) => {
+    console.log(imageKey,audioKey)
     const authData = await Auth.currentAuthenticatedUser()
     const newMessage = await DataStore.save(new MessageModel({
-      content: message,
-      userID: authData.attributes.sub,
+      content,
       imageKey,
       audioKey,
+      userID: authData.attributes.sub,
       chatroomID: chatRoom.id,
+      status: 'SENT',
+      replyToMessageID: messageReplyTo?.id,
     }))
 
     updateLastMessage(newMessage)
-
     resetFields()
   }
 
@@ -155,24 +170,20 @@ export default function MessageInput({ chatRoom }) {
   }
 
   const progressCallback = (progress) => {
-    console.log(`Uploaded: ${progress.loaded}/${progress.total}`);
     setImgUploadprogress(progress.loaded/progress.total)
   }
 
   // Audio
   const startRecording = async () => {
     try {
-      console.log('Requesting permissions..');
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
       }); 
-      console.log('Starting recording..');
       const { recording } = await Audio.Recording.createAsync(
          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
       );
       setRecording(recording);
-      console.log('Recording started');
     } catch (err) {
       console.error('Failed to start recording', err);
     }
@@ -182,7 +193,6 @@ export default function MessageInput({ chatRoom }) {
     if (!recording) {
       return;
     }
-    console.log('Stopping recording..');
     setRecording(null);
     await recording.stopAndUnloadAsync();
     await Audio.setAudioModeAsync({
@@ -215,6 +225,26 @@ export default function MessageInput({ chatRoom }) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       // keyboardVerticalOffset={100} 
     >
+      { messageReplyTo && (
+        <View style={{
+          paddingHorizontal: 20,
+          flexDirection:'row',
+          justifyContent:'space-between',
+          alignItems: 'center',
+          backgroundColor:"#f2f2f2",
+        }}>
+          <View style={{ flex:1 }}>
+            <MessageReply message={messageReplyTo} status={'INPUT'}/>
+          </View>
+          <Pressable onPress={removeMessageReplyTo}>
+            <AntDesign 
+              name="closecircle" 
+              size={20} 
+              color="grey" 
+            />
+          </Pressable>
+        </View>  
+      )}
       { image && (
         <View style={styles.sendImageContainer}>
           <Image 
@@ -245,7 +275,9 @@ export default function MessageInput({ chatRoom }) {
       }
       {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
       <View style={[styles.container, { height: isEmojiSelectorOpen ? "50%" : 'auto'}]}>
-        <View style={styles.row}>
+      <View style={styles.row}>
+      {
+        !(image || soundUri) && (
           <View style={styles.inputContainer}>
             <Pressable onPress={onPressSmileIcon}>
               <SimpleLineIcons 
@@ -287,7 +319,9 @@ export default function MessageInput({ chatRoom }) {
               />
             </Pressable>
           </View>
-          <Pressable style={styles.bottonContainer} onPress={onPressSendIcon}>
+        )}
+        
+          <Pressable style={[styles.bottonContainer, image || soundUri ? {flex:1} : {width:40}]} onPress={onPressSendIcon}>
             {
               (message || image || soundUri) ? <Ionicons name='send' size={24} color="white" /> : <AntDesign name='plus' size={24} color="white" />
             }
@@ -342,7 +376,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   bottonContainer: {
-    width: 40,
     height: 40,
     borderRadius: 20,
     justifyContent: 'center',

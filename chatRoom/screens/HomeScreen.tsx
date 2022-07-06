@@ -10,7 +10,6 @@ import { ChatRoom, ChatRoomUser } from '../chatRoomBackend/src/models';
 export default function HomeScreen() {
 
   const logout = () => {
-    // console.log('logout')
     // Can't perform a React state update on an unmounted component.
     Auth.signOut()
   }
@@ -26,6 +25,7 @@ export default function HomeScreen() {
         .map(ChatRoomUser => ChatRoomUser.chatRoom)
 
       setChatRooms(chatRooms)
+      // console.log('chatRooms', chatRooms)
     }
     fetchChatRooms()
   }, [])
@@ -38,9 +38,9 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       />
       {/* logout */}
-      {/* <Pressable onPress={logout} style={{backgroundColor: 'lightblue', height: 50, margin: 10, justifyContent: 'center', alignItems: 'center'}}>
+      <Pressable onPress={logout} style={{backgroundColor: 'lightblue', height: 50, margin: 10, justifyContent: 'center', alignItems: 'center'}}>
         <Text>Logout</Text>
-      </Pressable> */}
+      </Pressable>
     </View>
   );
 }

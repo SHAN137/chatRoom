@@ -5,7 +5,6 @@ import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
-  console.log('asdfashghasgdjh8889')
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tab OnsdaefasasdaDhjshk</Text>

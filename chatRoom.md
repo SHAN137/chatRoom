@@ -139,15 +139,8 @@ keyboardDidHide = () => {
 - Fetch Usres
     - 查询用户列表
     - bug 网页版可正常显示数据，手机安卓版不能连接云端数据库，只自动获取手机本地数据库
-        - 原因（分析不出来）：
-            1. 手机没联网 
-            2. aws 权限 
-            - 报警告： [Unhandled promise rejection: Error: No credentials, applicationId or region]
-                - 屏蔽 aws config 的 Analytics
-        - 没解决
-            - amplify pull --appId dcd7klisda86a --envName staging
-            - amplify push
-            - amplify update api？？？？
+        - 原因：手机没联网, 得连模拟手机自带的 AndroidWifi（limited connection）
+           
 - Fetch & CreateChatRooms
     - tip 
         - !!chatRoom.newMessage 有时为 0 会报错，可取两次反，转为 boolen
@@ -181,6 +174,17 @@ keyboardDidHide = () => {
     - 打开 cd D:\AndroidSDK\emulator
     - 查看 .\emulator.exe -list-avds
     - 运行 .\emulator.exe -avd Pixel_2_API_30
+- 时间库
+    - moment.js
+    - day.js
+
+##### (video 4)
+- 消息状态 --> 已发送（初始状态）、已接收（监听 dataStore 同步）、已阅读（对方接受到已接收到的信息） 
+- 用户离线与在线
+- 引用信息
+- 群组（一个管理员）
+
+
 
 - Query library
 - On-device caching(断网时保存数据在本地)

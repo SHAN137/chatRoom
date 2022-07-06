@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import { Feather, } from '@expo/vector-icons';
-const AudioPlayer = ({soundUri}) => {
+const AudioPlayer = ({soundUri, fromMessageReply=false}) => {
     const [sound, setSound] = useState(null);
     const [isPlaySound, setIsPlaySound] =  useState(false)
     const [soundPlayprogress, setSoundPlayprogress] = useState(0);  // 录音播放进度
@@ -53,8 +53,6 @@ const AudioPlayer = ({soundUri}) => {
           return;
         }
     
-        console.log('Playing Sound', isPlaySound);
-    
         if(!isPlaySound) {
           await sound.playFromPositionAsync(0);
         } else {
@@ -76,10 +74,13 @@ const AudioPlayer = ({soundUri}) => {
             <Pressable onPress={playSound}>
                 <Feather name={isPlaySound ? 'pause' : 'play'} size={24} color='gray' />
             </Pressable>
-            <View style={styles.audioProgressBG}>
-                {/* 前景 foreground */}
-                <View style={[styles.audioProgressFG, { left: `${soundPlayprogress * 100}%` } ]}></View> 
-            </View>
+            {
+                !fromMessageReply && (
+                    <View style={styles.audioProgressBG}>
+                        {/* 前景 foreground */}
+                        <View style={[styles.audioProgressFG, { left: `${soundPlayprogress * 100}%` } ]}></View> 
+                    </View> 
+            )}
             <Text>{getRestTime()}</Text>
         </View>
     )
