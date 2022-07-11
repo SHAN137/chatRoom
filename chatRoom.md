@@ -1,5 +1,6 @@
-### 安全加密的实时聊天APP实战
+### 安全加密的实时聊天APP
 前端 chatRoom：expo + Android Studio模拟器 + react Native + react navigation（stack navigation）
+后端 aws amplify
 
 #### 将学习的内容
 - expo
@@ -174,6 +175,7 @@ keyboardDidHide = () => {
     - 打开 cd D:\AndroidSDK\emulator
     - 查看 .\emulator.exe -list-avds
     - 运行 .\emulator.exe -avd Pixel_2_API_30
+    .\emulator.exe -avd Galaxy_Nexus_API_30
 - 时间库
     - moment.js
     - day.js
@@ -183,9 +185,31 @@ keyboardDidHide = () => {
 - 用户离线与在线
 - 引用信息
 - 群组（一个管理员）
+- 删除信息
+    - react-native-action-sheet
 
+##### (video 5)
+- 加密
+    - 对称加密 same secret key
+    - 不对称加密（公钥、私钥）
+        - 一个密钥对
+        - 公钥加密、私钥解密（私下保存在某人设备上）
+- 秘钥产生过程
+    - 用户 sign up
+    - 程序产生一对秘钥
+    - 私钥 save to device storage，公钥 save to dataBase
+    - 如果用公钥对数据加密，那么只能用对应的私钥解密
+- A send Message to B（Encryption）
+    - A plain message text
+    - get user B public key
+    - encryp message with user B public key
+    - get a encryped message, then save in database
+    - 库里存的是已经加密的信息  
+- B receive a message （decryption）
+    - get a encryped message from database
+    - read a private key
+    - decrypt with B private key, then get a decrypted message
+- 项目
+    - npm install tweetnacl
 
-
-- Query library
-- On-device caching(断网时保存数据在本地)
-- Data sync
+- 断网时，调用本地数据

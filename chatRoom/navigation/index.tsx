@@ -16,9 +16,12 @@ import LinkingConfiguration from './LinkingConfiguration';
 import ChatRoomScreen from '../screens/ChatRoomScreen';
 import HomeScreen from '../screens/HomeScreen';
 import UsersScreen from '../screens/UsersScreen';
+import GroupInfoScreen from '../screens/GroupInfoScreen';
+import SettingScreen from '../screens/SettingScreen';
 
 import ChatRoomHeader from './ChatRoomHeader';
 import HomeHeader from './HomeHeader';
+
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -56,10 +59,22 @@ function RootNavigator() {
         }
       />
       <Stack.Screen 
+        name="GroupInfo" 
+        component={GroupInfoScreen} 
+      />
+      <Stack.Screen 
         name="Users" 
         component={UsersScreen} 
         options={{ 
           title: 'Users',
+          // headerBackTitleVisible: false,  
+        }}
+      />
+      <Stack.Screen 
+        name="Setting" 
+        component={SettingScreen} 
+        options={{ 
+          title: 'Setting',
           // headerBackTitleVisible: false,  
         }}
       />

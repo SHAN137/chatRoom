@@ -10,9 +10,11 @@ import { Amplify, Auth } from 'aws-amplify';
 import awsconfig from './chatRoomBackend/src/aws-exports';
 import { withAuthenticator } from 'aws-amplify-react-native';
 
-import { DataStore, Hub, syncExpression } from 'aws-amplify';
+import { DataStore, Hub } from 'aws-amplify';
 import { useEffect, useState } from 'react';
 import { Message as MessageModel, User as UserModel } from './chatRoomBackend/src/models';
+
+import { ActionSheetProvider } from  '@expo/react-native-action-sheet'
 
 Amplify.configure({
   ...awsconfig,
@@ -21,12 +23,10 @@ Amplify.configure({
   }
 });
 
+
 function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-
-  // 用户验证的产生的信息
-  // Auth.currentAuthenticatedUser().then(console.log)
 
   const [authUser, setAuthUser] = useState<UserModel>()
 
@@ -35,18 +35,17 @@ function App() {
     const listener = Hub.listen('datastore', async hubData => {
       const { event, data } = hubData.payload;
       // console.log('*************datastore event***********************')
-      // console.log('event', event)
-      // console.log('data', data)
+     
 
       if (event === 'networkStatus') {
-        console.log(`User has a network connection: ${data.active}`)
+        // console.log(`User has a network connection: ${data.active}`)
       }
       if (
         event === 'outboxMutationProcessed'
         && data.model === MessageModel
         && !(["DELIVERED", "READ"].includes(data.element.status))
       ) {
-        console.log(`when a local change has finished synchronization with the Cloud and is updated locally`, data)
+        // console.log(`when a local change has finished synchronization with the Cloud and is updated locally`, data)
         // set the message status to delivered
         DataStore.save(
           MessageModel.copyOf(data.element, updated => {
@@ -110,8 +109,6 @@ function App() {
         updated.lastOnlineAt = new Date().getTime();
       })
     )
-    // console.log('updatedUser',updatedUser)
-    // setAuthUser(updatedUser)
   }
 
   if (!isLoadingComplete) {
@@ -119,7 +116,9 @@ function App() {
   } else {
     return (
       <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} />
+        <ActionSheetProvider>
+          <Navigation colorScheme={colorScheme} />
+        </ActionSheetProvider>
         <StatusBar />
       </SafeAreaProvider>
     );

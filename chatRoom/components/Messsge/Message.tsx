@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, useWindowDimensions, Pressable } from 'react-native';
+import { Text, View, StyleSheet, useWindowDimensions, Pressable, Alert } from 'react-native';
 
 import { DataStore, Auth, Storage } from 'aws-amplify';
 import { User } from '../../chatRoomBackend/src/models';
@@ -12,6 +12,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { Message as MessageModel } from '../../chatRoomBackend/src/models';
 import MessageReply from '../MesssgeReply';
 
+import { useActionSheet } from '@expo/react-native-action-sheet';
+
+import { box } from 'tweetnacl';
+import { stringToUint8Array, decrypt, getAuthPrivateKey} from '../../utils/crypto';
+import { useNavigation } from '@react-navigation/native';
+
 export default function Message(props) {
     const { setMessageReplyTo, message: propsMessage, } = props 
 
@@ -20,8 +26,12 @@ export default function Message(props) {
     const [isMe, setIsMe] = useState<boolean | null>(null)
     const [soundUri, setSoundUri] = useState<string|null> (null)
     const [repliedTo, setRepliedTo] = useState<MessageModel|null>(null)
+    const [isDelete, setIsDelete] = useState(null)
+    const [decryptedContent, setDecryptedContent] = useState('')
 
     const { width } = useWindowDimensions()
+    const { showActionSheetWithOptions } = useActionSheet()
+    const navigation = useNavigation()
 
     // prop 变化时 message 跟着更新
     useEffect(() => {
@@ -54,11 +64,22 @@ export default function Message(props) {
     }, [message])
 
     useEffect(() => {
+        if(message?.content && user?.publicKey) {
+            decryptContent()
+        }
+    }, [message, user])
+
+    useEffect(() => {
         // 监听消息有无被更改
         const subscription = DataStore.observe(MessageModel, message.id).subscribe(msg => {
-            if (msg.model === MessageModel && msg.opType === 'UPDATE') {
-                setMessage((message) => {return {...message, ...msg.element}})
+            if (msg.model === MessageModel) {
+                if (msg.opType === 'UPDATE') {
+                    setMessage((message) => {return {...message, ...msg.element}})
+                } else if (msg.opType === 'DELETE' && msg.element.id === message.id) {
+                    setIsDelete(true)
+                }
             }
+            
         });
 
         // component will unmount
@@ -88,10 +109,82 @@ export default function Message(props) {
         DataStore.query(MessageModel, message.replyToMessageID).then(setRepliedTo)
     }
    
+    const openActionMenu = () => {
+        const options = ["引用"]
+        if(isMe) {
+            options.push("删除")
+        }
+        options.push("取消")
+        const destructiveButtonIndex = 1;
+        const cancelButtonIndex = 2;
+        
+        showActionSheetWithOptions(
+            {
+                options,
+                destructiveButtonIndex,
+                cancelButtonIndex,
+            },
+            onActionPress
+        )
+    }
+
+    const onActionPress = (index) => {
+        if(index === 0) {
+            setMessageReplyTo()
+        }else if(index === 1) {
+            if(!isMe) {
+                return;
+            }
+            confirmDelete()
+        }
+    }
+
+    const confirmDelete = () => {
+        Alert.alert(
+            '删除',
+            `确认从该群组删除此消息`,
+            [
+                {text: '确定', style: 'destructive', onPress: () => deleteMessage()},
+                {text: '取消', onPress: () => {}},
+            ],
+            {
+                cancelable: true,
+            }
+        );
+    }
+
+    const deleteMessage = async() => {
+        await DataStore.delete(message)
+    }
+
+    const decryptContent = async() => {
+        
+        const privateKey = await getAuthPrivateKey()
+        if(!privateKey) {
+            Alert.alert(
+                '你还没设置秘钥',
+                '需要去设置页面生成',
+                [{
+                    text: '设置',
+                    onPress: () => {navigation.navigate('Setting')},
+                }]
+            )
+            return;
+        }
+        
+        const sharedB = box.before(
+            stringToUint8Array(user.publicKey),
+            privateKey
+        );
+
+        const decrypted = decrypt(sharedB, message.content);
+        setDecryptedContent(decrypted.message)
+    }
+
     return (
         <View>
             <Pressable 
-                onLongPress={setMessageReplyTo}
+                onLongPress={openActionMenu}
                 style={[
                     styles.containter, 
                     isMe ? styles.rightContainer : styles.leftContainer, 
@@ -114,7 +207,7 @@ export default function Message(props) {
                 ]}>
                 { 
                     !!message.imageKey && (
-                    <View style={{ marginBottom: !message.content ? 0 : 10 }}>
+                    <View style={{ marginBottom: !decryptedContent? 0 : 10 }}>
                         <S3Image 
                             imgKey={message.imageKey} 
                             style={{width: width * 0.5, aspectRatio: 4/3}}
@@ -124,14 +217,14 @@ export default function Message(props) {
                 )}
                 {
                     !! message.audioKey && (
-                    <View style={{ marginBottom: !message.content ? 0 : 10 }}>
+                    <View style={{ marginBottom: !decryptedContent ? 0 : 10 }}>
                         <AudioPlayer soundUri={soundUri}/>
                     </View>
                 )}
                 { 
-                    !!message.content &&
+                    (!!decryptedContent || isDelete) &&
                     <View style={{alignItems: 'flex-end'}}>
-                        <Text style={{ color: isMe ? 'white' : 'black' }}>{message.content}</Text>
+                        <Text style={{ color: isMe ? 'white' : 'black' }}>{isDelete ? '消息已删除' : decryptedContent}</Text>
                     </View> 
                 }
                 </View>       
@@ -161,7 +254,6 @@ const styles = StyleSheet.create({
         marginRight: 'auto'
     },
     rightContainer: {
-        backgroundColor: 'lightgrey',
         marginLeft: 'auto',
         marginRight: 10
     },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Text, TextInput, StyleSheet, Pressable, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Image, Text, TextInput, StyleSheet, Pressable, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 // import styles from './styles';
 // import styles from './styles';
 import Colors from '../../constants/Colors'
@@ -21,9 +21,15 @@ import AudioPlayer from '../AudioPlayer';
 
 import MessageReply from '../MesssgeReply';
 import { handler } from '../../chatRoomBackend/amplify/backend/function/chatRoomPostConfirmation/src/custom';
+import { ChatRoomUser } from '../../chatRoomBackend/src/models';
+
+import { box } from 'tweetnacl';
+import { useNavigation } from '@react-navigation/native';
+import { stringToUint8Array, encrypt, getAuthPrivateKey } from '../../utils/crypto';
 
 export default function MessageInput(props) {
   const {chatRoom, messageReplyTo, removeMessageReplyTo} = props
+  const navigation = useNavigation()
 
   // inputMessage
   const [message, setMessage] = useState('');
@@ -63,12 +69,13 @@ export default function MessageInput(props) {
 
   // 每次只能传一种类型的消息
   useEffect(() => {
+    // 有图片或音频信息时，清空文字信息
     if(image || soundUri) {
       setMessage('')
     }
   }, [image,soundUri])
 
-  console.log('message',message)
+
   // 文本、图片、音频
   const onPressSendIcon = () => {
     if (image) {
@@ -76,27 +83,76 @@ export default function MessageInput(props) {
     } else if (soundUri) {
       sendAudio()
     }else if (message) {
-      sendMessage({content: message})
+      sendText()
     } else {
       onPlusClick()
     }
   }
 
-  const sendMessage = async ({ imageKey=null, audioKey=null, content='' }) => {
-    console.log(imageKey,audioKey)
+  const sendText = async () => {
+    const authData = await Auth.currentAuthenticatedUser()
+    // all users in this chatRoom
+    const users = (await DataStore.query(ChatRoomUser))
+      .filter(item => item.chatRoom.id === chatRoom.id && item.user.id === authData.attributes.sub)
+      .map(item => item.user)
+    // for each user, encrpyt the message with his own publicKey
+    // save it as a new message and send 
+    await Promise.all(users.map(user => sendMessageToUser(user)))
+  }
+
+  const sendMessageToUser = async (user) => {
+    const authPrivateKey = await getAuthPrivateKey()
+    if(!user.publicKey) {
+      Alert.alert(
+        `${user.name}还没设置秘钥`,
+        '对方设置后才可发送信息'
+      )
+      return;
+    }
+    if(!authPrivateKey) {
+      Alert.alert(
+        '你还没设置秘钥',
+        '需要去设置页面生成',
+        [{
+            text: '设置',
+            onPress: () => {navigation.navigate('Setting')},
+        }]
+      )
+      return;
+    }
+
+    // auth send message to user
+    const authsharedKeyToUser = box.before(
+      stringToUint8Array(user.publicKey), 
+      authPrivateKey
+    );
+    const encryptedMessage = await encrypt(authsharedKeyToUser, { message })
+    await sendMessage({
+      content: encryptedMessage,
+      forUserID: user.id
+    })
+  }
+
+  const sendMessage = async ({ 
+    imageKey=null, 
+    audioKey=null, 
+    content='',
+    forUserID=null 
+  }) => {
     const authData = await Auth.currentAuthenticatedUser()
     const newMessage = await DataStore.save(new MessageModel({
       content,
       imageKey,
       audioKey,
       userID: authData.attributes.sub,
+      forUserID,
       chatroomID: chatRoom.id,
       status: 'SENT',
       replyToMessageID: messageReplyTo?.id,
     }))
 
     updateLastMessage(newMessage)
-    resetFields()
+    resetFields()  
   }
 
   const updateLastMessage = async (newMessage) => {
@@ -372,7 +428,6 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    backgroundColor: 'pink',
     marginHorizontal: 5,
   },
   bottonContainer: {

@@ -7,7 +7,7 @@ import MessageInput from '../components/MessageInput';
 
 import { useRoute, useNavigation } from '@react-navigation/core'
 
-import { DataStore, SortDirection } from 'aws-amplify';
+import { Auth, DataStore, SortDirection } from 'aws-amplify';
 import { Message as MessageModel, ChatRoom } from '../chatRoomBackend/src/models';
 
 
@@ -18,10 +18,6 @@ export default function ChatRoomScreen() {
 
     const route = useRoute();
     const navigation = useNavigation();
-
-    // 这里设置会报 warning，改成了用路由给头部传参
-    // Cannot update a component (`NativeStackNavigator`) while rendering a different component (`ChatRoomScreen`), To locate the bad setState() call inside `ChatRoomScreen`
-    // navigation.setOptions({title: 'shsna'})
 
     useEffect(() => {
         fetchChatRoom()
@@ -62,29 +58,34 @@ export default function ChatRoomScreen() {
         if (!chatRoom) {
             return
         }
-        const fetchedMessages = await DataStore.query(MessageModel, 
+        const authData = await Auth.currentAuthenticatedUser()
+        const fetchedMessages = (await DataStore.query(MessageModel, 
             message => message.chatroomID("eq", chatRoom?.id),
             {
                 sort: messages => messages.createdAt(SortDirection.ASCENDING)
             }
-        )
+        )).filter(item => {
+            if(!!item.content) {
+                // 只有加密的 text 信息才需要筛选 forUserID
+                return item.forUserID === authData.attributes.sub
+            } else {
+                return true
+            }
+        })
+
         setMessages(fetchedMessages)
     }
-
-    // if(chatRoom?.id) {
-    //     return <ActivityIndicator />
-    // }
 
     return (
         <SafeAreaView style={styles.page}>
             <FlatList
                 data={messages}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => 
                     <Message 
                         message={item} 
                         setMessageReplyTo={()=>setMessageReplyTo(item)}
                 />} 
-                style={{'backgroundColor': 'red'}}
                 // inverted={true}
             />
             <MessageInput 

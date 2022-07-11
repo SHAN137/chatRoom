@@ -13,6 +13,7 @@ type Message @model @auth(rules: [{allow: public}]) {
   audioKey: String
   status: MessageStauts
   replyToMessageID: ID
+  forUserID: String
 }
 
 type ChatRoom @model @auth(rules: [{allow: public}]) {
@@ -21,6 +22,8 @@ type ChatRoom @model @auth(rules: [{allow: public}]) {
   lastMessage: Message @hasOne
   Messages: [Message] @hasMany(indexName: "byChatRoom", fields: ["id"])
   chatRoomUsers: [User] @manyToMany(relationName: "ChatRoomUser")
+  Admin: User @hasOne
+  name: String
 }
 
 type User @model @auth(rules: [{allow: public}]) {
@@ -31,5 +34,6 @@ type User @model @auth(rules: [{allow: public}]) {
   Messages: [Message] @hasMany(indexName: "byUser", fields: ["id"])
   chatrooms: [ChatRoom] @manyToMany(relationName: "ChatRoomUser")
   lastOnlineAt: AWSTimestamp
+  publicKey: String
 }
  

@@ -10,8 +10,14 @@ const styles = StyleSheet.create({
     image: {
       width: 50,
       height: 50,
-      borderRadius: 25,
-      marginRight: 10,
+      borderRadius: 5,
+    },
+    groupImage: {
+      width: 23,
+      height: 23,
+      borderRadius: 2,
+      margin: 1,
+      backgroundColor: '#aaa'
     },
     badgeContainer: {
       width: 18,

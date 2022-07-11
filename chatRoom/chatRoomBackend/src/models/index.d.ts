@@ -33,6 +33,7 @@ export declare class Message {
   readonly audioKey?: string | null;
   readonly status?: MessageStauts | keyof typeof MessageStauts | null;
   readonly replyToMessageID?: string | null;
+  readonly forUserID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Message, MessageMetaData>);
@@ -45,9 +46,12 @@ export declare class ChatRoom {
   readonly lastMessage?: Message | null;
   readonly Messages?: (Message | null)[] | null;
   readonly chatRoomUsers?: (ChatRoomUser | null)[] | null;
+  readonly Admin?: User | null;
+  readonly name?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly chatRoomLastMessageId?: string | null;
+  readonly chatRoomAdminId?: string | null;
   constructor(init: ModelInit<ChatRoom, ChatRoomMetaData>);
   static copyOf(source: ChatRoom, mutator: (draft: MutableModel<ChatRoom, ChatRoomMetaData>) => MutableModel<ChatRoom, ChatRoomMetaData> | void): ChatRoom;
 }
@@ -60,6 +64,7 @@ export declare class User {
   readonly Messages?: (Message | null)[] | null;
   readonly chatrooms?: (ChatRoomUser | null)[] | null;
   readonly lastOnlineAt?: number | null;
+  readonly publicKey?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<User, UserMetaData>);
